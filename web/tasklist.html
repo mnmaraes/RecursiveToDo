@@ -1,0 +1,14 @@
+<polymer-element name="task-list">
+  <template>
+    <h2>{{task.name}}</h2>
+    <button on-click="{{newTask}}">Add New Task</button>
+    <ul>
+      <template repeat="{{subtask in task.subtasks}}">
+        <li>
+          <task-list task="{{subtask}}"></task-list>
+        </li>
+      </template>
+    </ul>
+  </template>
+  <script type="application/dart" src="tasklist.dart"></script>
+</polymer-element>

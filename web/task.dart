@@ -1,13 +1,15 @@
 library task;
 
+import 'package:polymer/polymer.dart';
+
 class Task {
-  String name;
-  String details;
+  @observable String name;
+  @observable String details;
   
   Task supertask = null;
-  List<Task> subtasks = new List<Task>();
+  @observable List<Task> subtasks = toObservable([]);
   
-  Task(this.name, this.details, {this.supertask}) {
+  Task(this.name, this.details, [this.supertask]) {
     if(this.supertask != null && !this.supertask.subtasks.contains(this)) {
       this.supertask.subtasks.add(this);  
     }
