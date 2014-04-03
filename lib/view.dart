@@ -56,26 +56,17 @@ class View {
   }
   
   //Drawing Helper Methods
-  String _strokeStyleCache;
-  String _fillStyleCache;
-  num _lineWidthCache;
   
   pushContextAttributes(CanvasRenderingContext2D context) {
-    _strokeStyleCache = context.strokeStyle;
-    _fillStyleCache = context.fillStyle;
-    _lineWidthCache = context.lineWidth;
-    
-    context..strokeStyle = borderColor
+    context..save()
+           ..strokeStyle = borderColor
            ..lineWidth = borderWidth
            ..fillStyle = backgroundColor
            ..translate(frame.left, frame.top);
   }
   
   popContextAttributes(CanvasRenderingContext2D context) {
-    context..strokeStyle = _strokeStyleCache
-           ..fillStyle = _fillStyleCache
-           ..lineWidth = _lineWidthCache
-           ..translate(-frame.left, -frame.top);
+    context.restore();
   }
   
   //View Methods
@@ -84,14 +75,45 @@ class View {
     subview._superview = this;
   }
   
+  addEventRecognizer(EventRecognizer recognizer){
+    recognizer.view = this;
+  }
+  
+  //TODO: Remove Methods
+  
   //Frame Accessors
   set frame(Rectangle newFrame) => layer._frame = newFrame;
   Rectangle get frame => layer._frame;
   
+  Point get offset {
+    num offsetX = frame.left;
+    num offsetY = frame.top;
+    
+    View view = _superview;
+    
+    while (view != null){
+      offsetX += view.frame.left;
+      offsetY += view.frame.top;
+      
+      view = view._superview;
+    }
+    
+    return new Point(offsetX, offsetY);
+  }
+  
+  AppWindow get appWindow {
+    View view = this;
+    
+    while(view != null) {
+      if(view is AppWindow)
+        return view;
+      
+      view = view._superview;
+    }
+    
+    return null;
+  }
+  
   //View Accessors
   get superview => _superview;
-}
-
-class MouseEventRecognizer {
-  View view;
 }

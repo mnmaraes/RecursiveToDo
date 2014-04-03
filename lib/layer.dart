@@ -4,9 +4,6 @@ class Layer {
   //View Coordinates
   Rectangle _frame = new Rectangle(0, 0, 0, 0);
   
-  //Frame Attributes
-  Rectangle _outerFrameCache;
-  
   //View Border Attributes
   num cornerRadius = 0;
   

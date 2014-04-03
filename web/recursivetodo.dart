@@ -20,8 +20,10 @@ void main() {
 class Application {
   AppWindow appWindow;
   
+  View subview;
+  
   Application(CanvasElement container){
-    appWindow = new AppWindow(container); 
+    appWindow = new AppWindow(container);
   }
   
   start() {
@@ -29,9 +31,10 @@ class Application {
     
     view.backgroundColor = "#dddddd";
     view.borderWidth = 2;
+    view.clipSubviews = true;
     view.layer.cornerRadius = 10;
     
-    View subview = new View(new Rectangle(20, 20, 100, 100));
+    subview = new View(new Rectangle(20, 20, 100, 100));
     
     subview.backgroundColor = "#ff0000";
     subview.layer.cornerRadius = 50;
@@ -43,25 +46,21 @@ class Application {
     
     appWindow.drawWindow();
     
-    appWindow.container.onMouseMove.listen((MouseEvent event){
-      CanvasRenderingContext2D context = appWindow.container.context2D;
+    MouseOverEventRecognizer recognizer = new MouseOverEventRecognizer(subview, handleStuff);
+  }
+  
+  handleStuff(MouseEventRecognizer recognizer, MouseEvent event) {
+    if(recognizer.status == "began"){
+      subview.backgroundColor = "#0000ff";
+      subview.appWindow.drawWindow();
+    } else if(recognizer.status == "recognizing"){
+      appWindow.container.context2D..fillStyle = "#000000"
+                                   ..clearRect(600, 30, 100, 30)
+                                   ..fillText(event.offset.toString(), 600, 45);
+    } else if(recognizer.status == "ended"){
+      subview.backgroundColor = "#ff0000";
+      subview.appWindow.drawWindow();
+    }
       
-      context.translate(50, 50);
-      subview.layer.buildPath(context);
-      
-      if(context.isPointInPath(event.offset.x, event.offset.y)){
-        context.translate(-50, -50);
-        subview.backgroundColor = "#0000ff";
-        appWindow.drawWindow();
-      } else {
-        context.translate(-50, -50);
-        subview.backgroundColor = "#ff0000";
-        appWindow.drawWindow();
-      }
-      
-      context..fillStyle = "#000000"
-             ..fillText(event.offset.toString(), 550, 30, 700);
-      
-    });
-  }      
+  }
 }
