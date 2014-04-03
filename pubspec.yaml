@@ -1,7 +1,7 @@
 name: RecursiveToDo
 description: A sample Polymer application
 dependencies:
-    polymer: any
+  browser: any
 transformers:
 - polymer:
     entry_points: web/recursivetodo.html
