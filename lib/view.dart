@@ -28,7 +28,7 @@ class View {
   }
   
   
-  //View Events
+  //View Drawing
   draw(CanvasRenderingContext2D context) {
     //Set Context Properties
     pushContextAttributes(context);
@@ -56,13 +56,11 @@ class View {
     
     popContextAttributes(context);
   }
-  
-  //Drawing Helper Methods
-  
   drawContents(CanvasRenderingContext2D context){
     //Any Subclass Custom drawing can go here so draw() doesn't need to be overridden.
   }
   
+  //Drawing Helper Methods
   pushContextAttributes(CanvasRenderingContext2D context) {
     context..save()
            ..strokeStyle = borderColor

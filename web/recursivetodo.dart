@@ -49,7 +49,14 @@ class Application {
     
     view.addSubview(subview);
     
+    List elementList = ["Alpha", "Beta", "Gamma", "Whatever comes after Gamma"];
+    
+    ListViewAdapter adapter = new ListViewAdapter(elementList);
+    ListView listView = new ListView(new Rectangle(550, 30, 300, 700), adapter);
+    listView.backgroundColor = "#dddddd";
+    
     appWindow.addSubview(view);
+    appWindow.addSubview(listView);
     
     appWindow.drawWindow();
     

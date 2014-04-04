@@ -17,6 +17,6 @@ class Label extends View{
   drawContents(CanvasRenderingContext2D context) {
     context..fillStyle = textColor
            ..font = font
-           ..fillText(text, frame.left, (frame.top + frame.height)/2, frame.width);
+           ..fillText(text, frame.left, (frame.height)/2, frame.width);
   }
 }
