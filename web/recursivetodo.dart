@@ -21,6 +21,7 @@ class Application {
   AppWindow appWindow;
   
   View subview;
+  Label label;
   
   Application(CanvasElement container){
     appWindow = new AppWindow(container);
@@ -34,11 +35,17 @@ class Application {
     view.clipSubviews = true;
     view.layer.cornerRadius = 10;
     
-    subview = new View(new Rectangle(20, 20, 100, 100));
+    subview = new View(new Rectangle(20, 20, 300, 100));
     
     subview.backgroundColor = "#ff0000";
-    subview.layer.cornerRadius = 50;
     subview.borderWidth = 1;
+    
+    label = new Label(new Rectangle(10, 10, 280, 80));
+
+    label.text = "Placeholder Text";
+    label.textColor = "#ffffff";
+    
+    subview.addSubview(label);
     
     view.addSubview(subview);
     
@@ -52,15 +59,11 @@ class Application {
   handleStuff(MouseEventRecognizer recognizer, MouseEvent event) {
     if(recognizer.status == "began"){
       subview.backgroundColor = "#0000ff";
-      subview.appWindow.drawWindow();
     } else if(recognizer.status == "recognizing"){
-      appWindow.container.context2D..fillStyle = "#000000"
-                                   ..clearRect(600, 30, 100, 30)
-                                   ..fillText(event.offset.toString(), 600, 45);
+      label.text = event.offset.toString();
     } else if(recognizer.status == "ended"){
       subview.backgroundColor = "#ff0000";
-      subview.appWindow.drawWindow();
     }
-      
+    appWindow.drawWindow();
   }
 }

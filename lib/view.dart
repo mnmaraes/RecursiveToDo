@@ -45,6 +45,8 @@ class View {
       context.clip();
     }
     
+    drawContents(context);
+    
     subviews.forEach((View v) => v.draw(context));
     
     if(borderWidth != 0 && clipSubviews) {
@@ -56,6 +58,10 @@ class View {
   }
   
   //Drawing Helper Methods
+  
+  drawContents(CanvasRenderingContext2D context){
+    //Any Subclass Custom drawing can go here so draw() doesn't need to be overridden.
+  }
   
   pushContextAttributes(CanvasRenderingContext2D context) {
     context..save()
