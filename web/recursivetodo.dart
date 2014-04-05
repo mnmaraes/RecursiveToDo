@@ -28,49 +28,86 @@ class Application {
   }
   
   start() {
-    View view = new View(new Rectangle(30, 30, 500, 500));
+    Task masterTask = Task.sharedRoot;
     
-    view.backgroundColor = "#dddddd";
-    view.borderWidth = 2;
-    view.clipSubviews = true;
-    view.layer.cornerRadius = 10;
+    Task subtask = new Task("Programming", "", masterTask);
     
-    subview = new View(new Rectangle(20, 20, 300, 100));
+    subtask.addSubtask(new Task("Journey", ""));
+    Task subsubtask = new Task("Recursive To Do", "", subtask);
     
-    subview.backgroundColor = "#ff0000";
-    subview.borderWidth = 1;
+    subsubtask.addSubtask(new Task("Some Other Stuff", ""));
     
-    label = new Label(new Rectangle(10, 10, 280, 80));
-
-    label.text = "Placeholder Text";
-    label.textColor = "#ffffff";
+    subtask = new Task("Writting", "", masterTask);
     
-    subview.addSubview(label);
+    subtask.addSubtask(new Task("Captain Sky", ""));
     
-    view.addSubview(subview);
+    masterTask.addSubtask(new Task("Networking", ""));
     
-    List elementList = ["Alpha", "Beta", "Gamma", "Whatever comes after Gamma"];
+    TaskView taskView = new TaskView(masterTask, new Rectangle(10, 10, 750, 900));
     
-    ListViewAdapter adapter = new ListViewAdapter(elementList);
-    ListView listView = new ListView(new Rectangle(550, 30, 300, 700), adapter);
-    listView.backgroundColor = "#dddddd";
-    
-    appWindow.addSubview(view);
-    appWindow.addSubview(listView);
-    
+    appWindow.addSubview(taskView);
     appWindow.drawWindow();
+  }
+}
+
+class TaskView extends View {
+  //Subviews
+  Label label;
+  ListView subtasks;
+  
+  //Attributes
+  Task task;
+  
+  bool isCollapsed = false;
+  bool hasSubTasks;
+  num level;
+  
+  //Constructor
+  TaskView(this.task, [Rectangle frame, this.level]) : super(frame) {
+    if(this.level == null){
+      this.level = 0;
+    }
     
-    MouseOverEventRecognizer recognizer = new MouseOverEventRecognizer(subview, handleStuff);
+    buildSubviews();
   }
   
-  handleStuff(MouseEventRecognizer recognizer, MouseEvent event) {
-    if(recognizer.status == "began"){
-      subview.backgroundColor = "#0000ff";
-    } else if(recognizer.status == "recognizing"){
-      label.text = event.offset.toString();
-    } else if(recognizer.status == "ended"){
-      subview.backgroundColor = "#ff0000";
+  buildSubviews(){
+    label = new Label(new Rectangle(0, 0, this.frame.width, 40));
+    label.text = task.name;
+    
+    this.addSubview(label);
+    
+    if(task.subtasks.length > 0){
+      TaskListViewAdapter adapter = new TaskListViewAdapter(task.subtasks);
+    
+      num identLevel = this.frame.width * .1;
+    
+      subtasks = new ListView(new Rectangle(identLevel, 40, this.frame.width - identLevel, this.frame.height - 40), adapter);
+    
+      this.addSubview(subtasks);
     }
-    appWindow.drawWindow();
+  }
+  
+  updateSubviews(){
+    
+  }
+  
+  //Overridden Accessors
+  set frame(Rectangle newFrame){
+    super.frame = newFrame;
+    updateSubviews();
+  }
+}
+
+class TaskListViewAdapter extends ListViewAdapter{
+  TaskListViewAdapter([List elements]) : super(elements);
+  
+  //Methods for Adapting Elements to Views - Overridden
+  View viewForElement(element, Rectangle frame){
+    return new TaskView(element, frame);
+  }
+  
+  num heightForElement(element){
+    return ((element as Task).numberOfSubtasks + 1)* 40;
   }
 }

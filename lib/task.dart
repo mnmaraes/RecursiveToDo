@@ -9,8 +9,11 @@ class Task{
   
   static final Task sharedRoot = new Task._root();
   
+  //Constructors
   Task(this.name, this.details, [Task supertask]){
-    this.supertask = supertask;
+    if(supertask != null) {
+      this.supertask = supertask;
+    }
   }
   
   Task._root(){
@@ -18,7 +21,13 @@ class Task{
     details = "";
   }
   
-  bool get isRootTaks => supertask == null;
+  //Task Methods
+  addSubtask(Task subtask){
+    subtask.supertask = this;
+  }
+  
+  //Accessors
+  bool get isRootTask => supertask == null;
   
   Task get supertask => _supertask;
   void set supertask (Task task) {
@@ -26,5 +35,13 @@ class Task{
       task.subtasks.add(this);
     
     _supertask = task;
+  }
+  
+  num get numberOfSubtasks {
+    num count = subtasks.length;
+    
+    subtasks.forEach((Task task) => count += task.numberOfSubtasks);
+    
+    return count;
   }
 }

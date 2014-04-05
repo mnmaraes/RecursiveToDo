@@ -4,7 +4,7 @@ part of canvasKit;
 class Label extends View{
   //Text Attributes
   String text;
-  String font = "20px HelveticaNeue-Light, HelveticaNeue, Helvetica, sans-serif";
+  String font = "20px HelveticaNeue, Helvetica, sans-serif";
   String textColor = "#000000";
   
   //View Overridden Default Attributes
