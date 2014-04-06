@@ -72,15 +72,25 @@ class TaskView extends View {
   }
   
   buildSubviews(){
+    buildLabel();
+    buildSubtasks();
+  }
+  
+  buildLabel(){
     label = new Label(new Rectangle(0, 0, this.frame.width, 40));
     label.text = task.name;
     
-    this.addSubview(label);
+    new MouseOverEventRecognizer(label, onMouseOver);
+    new MouseClickEventRecognizer(label, onMouseClick); 
     
+    this.addSubview(label);
+  }
+  
+  buildSubtasks(){
     if(task.subtasks.length > 0){
       TaskListViewAdapter adapter = new TaskListViewAdapter(task.subtasks);
     
-      num identLevel = this.frame.width * .1;
+      num identLevel = this.frame.width * .02;
     
       subtasks = new ListView(new Rectangle(identLevel, 40, this.frame.width - identLevel, this.frame.height - 40), adapter);
     
@@ -88,9 +98,24 @@ class TaskView extends View {
     }
   }
   
+  //View Events
   updateSubviews(){
-    
+    //TODO : Update Subviews to occupy new frame's space 
   }
+  
+  onMouseOver(MouseOverEventRecognizer recognizer){
+    if(recognizer.status == "began"){
+      label.font = "bold 20px HelveticaNeue, Helvetica, sans-serif";
+    } else if(recognizer.status == "ended") {
+      label.font = "20px HelveticaNeue, Helvetica, sans-serif";
+    }
+    appWindow.drawWindow();
+  }
+  
+  onMouseClick(MouseClickEventRecognizer recognizer){
+    //TODO : Handle Click Events
+  }
+  
   
   //Overridden Accessors
   set frame(Rectangle newFrame){

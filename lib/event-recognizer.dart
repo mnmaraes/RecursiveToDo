@@ -1,6 +1,6 @@
 part of canvasKit;
 
-typedef void EventHandler(EventRecognizer recognizer, Event event);
+typedef void EventHandler(EventRecognizer recognizer);
 
 abstract class EventRecognizer {
   View _view = null;
@@ -15,7 +15,7 @@ abstract class EventRecognizer {
   
   handleEvent(Event event){
     if(shouldRecognizeEvent(event)) {
-      handler(this, event);
+      handler(this);
     }
   }
   
@@ -23,7 +23,12 @@ abstract class EventRecognizer {
     return false;
   }
   
-  set view(View newView);
+  set view(View newView) {
+    if(!newView._eventRecognizers.contains(this))
+      newView._eventRecognizers.add(this);
+    
+    _view = newView;
+  }
   View get view => _view;
 }
 
@@ -44,6 +49,10 @@ abstract class MouseEventRecognizer extends EventRecognizer {
   }
 }
 
+//MouseOverEvent has 3 possible states:
+//  -"began" once the event began being recognized
+//  -"recognizing" state between began and ended 
+//  -"ended" called just after the event has stopped being recognized.
 class MouseOverEventRecognizer extends MouseEventRecognizer {
   
   MouseOverEventRecognizer([View view, EventHandler handler]) : super(view, handler);
@@ -66,7 +75,26 @@ class MouseOverEventRecognizer extends MouseEventRecognizer {
   }
   
   set view(View newView) {
-    _view = newView;
-    _view.appWindow.container.onMouseMove.listen((MouseEvent event) => handleEvent(event));
+    super.view = newView;
+    
+    AppWindow appWindow = _view.appWindow;
+    
+    if(appWindow != null){
+      appWindow.container.onMouseMove.listen((MouseEvent event) => handleEvent(event));
+    }
+  }
+}
+
+class MouseClickEventRecognizer extends MouseEventRecognizer {
+  MouseClickEventRecognizer([View view, EventHandler handler]) : super(view, handler);
+  
+  set view(View newView){
+    super.view = newView;
+        
+    AppWindow appWindow = _view.appWindow;
+    
+    if(appWindow != null){
+      appWindow.container.onClick.listen((MouseEvent event) => handleEvent(event));
+    }
   }
 }

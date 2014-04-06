@@ -8,19 +8,29 @@ class ListView extends View {
   bool clipSubviews = true;
   
   //Element Views
-  List<View> elementViews;
+  List<View> elementViews = new List();
   
   //Constructor
   ListView([Rectangle frame, ListViewAdapter listViewAdapter]) : super(frame) {
     this.adapter = listViewAdapter;
+    
+    updateSubviews();
+  }
+ 
+  updateSubviews(){
+    elementViews.forEach((View v) => removeView(v));
+    
+    elementViews = adapter.prepareElementViews();
+            
+    elementViews.forEach((View v) => this.addSubview(v));
   }
   
-  //View Drawing
-  drawContents(CanvasRenderingContext2D context){
-    elementViews = adapter.prepareElementViews();
-    
-    elementViews.forEach((View v) => v.draw(context));
-  }
+//  //View Drawing
+//  drawContents(CanvasRenderingContext2D context){
+//    elementViews = adapter.prepareElementViews();
+//    
+//    elementViews.forEach((View v) => v.draw(context));
+//  }
   
   set adapter(ListViewAdapter newAdapter){
     if(_adapter != null)
@@ -30,6 +40,8 @@ class ListView extends View {
       newAdapter.view = this;
     
     _adapter = newAdapter; 
+    
+    updateSubviews();
   }
   ListViewAdapter get adapter => _adapter;
 }

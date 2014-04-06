@@ -18,6 +18,9 @@ class View {
   View _superview = null;
   List<View> subviews = new List<View>();
   
+  //Event Recognizers
+  List<EventRecognizer> _eventRecognizers = new List(); 
+  
   //Contructors
   View([Rectangle frame]) {
     if(frame != null){
@@ -76,14 +79,25 @@ class View {
   //View Methods
   addSubview(View subview) {
     subviews.add(subview);
-    subview._superview = this;
+    subview.superview = this;
   }
   
+  removeView(View subview) {
+    if(subviews.contains(subview))
+      subviews.remove(subview);
+    
+    subview.superview = null;
+  }
+  
+  //Event Recognizer Methods
   addEventRecognizer(EventRecognizer recognizer){
     recognizer.view = this;
   }
   
-  //TODO: Remove Methods
+  reattachRecognizers() {
+    _eventRecognizers.forEach((EventRecognizer recognizer) => recognizer.view = this);
+    subviews.forEach((View view) => view.reattachRecognizers());
+  }
   
   //Frame Accessors
   set frame(Rectangle newFrame) => layer._frame = newFrame;
@@ -119,5 +133,16 @@ class View {
   }
   
   //View Accessors
-  get superview => _superview;
+  View get superview => _superview;
+  set superview(View newSuperview) {
+    AppWindow oldWindow = appWindow;
+    
+    _superview = newSuperview;
+    
+    AppWindow newWindow = appWindow;
+    
+    if(oldWindow != newWindow && newWindow != null){
+      reattachRecognizers();
+    }
+  }
 }
